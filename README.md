@@ -64,4 +64,8 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/massdriver-cloud/aws-mg
 
 </details>
 
-3. Check AWS MGN console for source server replication status or use `aws mgn describe-source-servers --region <region>`
+3. Check AWS MGN console for source server replication status or use:
+
+```bash
+aws mgn describe-source-servers --region <region>
+```
