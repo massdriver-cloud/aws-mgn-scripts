@@ -10,10 +10,10 @@ Scripts for initializing AWS MGN and installing AWS MGN replication agents
 2. Run `./init.sh`
 3. Answer prompts
 
-### Create migration inventory
+### Create migration inventory (Optional)
 
 > [!TIP]
-> **(Optional)** Migration inventory is great for migration multiple VMs across multiple migration waves, or VMs that are dependent on other VMs (grouped into the same "Application").
+>  Migration inventory is great for migration multiple VMs across multiple migration waves, or VMs that are dependent on other VMs (grouped into the same "Application").
 
 1. Run `./inventory.sh` or manually add data to `aws-application-migration-service-import.csv`
 2. Replace all of the `REPLACE` keys with desired values
