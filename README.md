@@ -33,7 +33,7 @@ aws sts assume-role \
 
 2. Paste this script into source server (make sure to replace env vars with correct info):
 
-<details>
+<details open>
     <summary>Linux</summary>
 
 ```bash
@@ -49,7 +49,7 @@ bash install.sh $AWS_ACCOUNT_ID $AWS_REGION $SERVER_NAME $AWS_ACCESS_KEY_ID $AWS
 
 </details>
 
-<details>
+<details open>
     <summary>Windows</summary>
 
 ```powershell
