@@ -4,13 +4,13 @@ Scripts for initializing AWS MGN and installing AWS MGN replication agents
 
 ## MGN Setup
 
-### Initialize AWS MGN service
+### Initialize AWS MGN Service
 
 1. Configure AWS creds using `aws configure`
 2. Run `./init.sh`
 3. Answer prompts
 
-### Create migration inventory (Optional)
+### Create Migration Inventory (optional)
 
 > [!TIP]
 >  Migration inventory is great for migration multiple VMs across multiple migration waves, or VMs that are dependent on other VMs (grouped into the same "Application").
