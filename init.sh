@@ -10,14 +10,47 @@
 #
 ######################################################################
 
-# add some type of value checking for empty inputs
 read -p "Enter the AWS region (e.g., us-east-1): " AWS_REGION
+if [[ ! $AWS_REGION =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then
+  echo "Error: Invalid AWS region format. Expected format is something like 'us-east-1'."
+  exit 1
+fi
+
 read -p "Set replication server IP type (PUBLIC_IP, PRIVATE_IP): " IP_TYPE
+if [[ ! $IP_TYPE =~ (PUBLIC_IP|PRIVATE_IP) ]]; then
+    echo "Error: Invalid IP type. Expected 'PUBLIC_IP' or 'PRIVATE_IP'."
+    exit 1
+fi
+
 read -p "Set replication server disk type (GP2, GP3, ST1): " DISK_TYPE
+if [[ ! $DISK_TYPE =~ (GP2|GP3|ST1) ]]; then
+    echo "Error: Invalid disk type. Expected 'GP3', 'GP2', or 'ST1'."
+    exit 1
+fi
+
 read -p "Set replication server EBS encryption (DEFAULT, CUSTOM): " EBS_ENCRYPTION
+if [[ ! $EBS_ENCRYPTION =~ (DEFAULT|CUSTOM) ]]; then
+    echo "Error: Invalid EBS encryption type. Expected 'DEFAULT' or 'CUSTOM'."
+    exit 1
+fi
+
 read -p "Set replication server instance type (e.g., t2.micro): " INSTANCE_TYPE
+if [[ ! $INSTANCE_TYPE =~ ^[a-z]{1}[0-9]{1}\.[a-z]+$ ]]; then
+    echo "Error: Invalid instance type. Expected format is something like 't2.micro' or 'c5.xlarge'."
+    exit 1
+fi
+
 read -p "Set replication server staging area subnet ID (e.g., subnet-01234abcde): " STAGING_SUBNET
+if [[ ! $STAGING_SUBNET =~ ^subnet-[a-z0-9]+$ ]]; then
+    echo "Error: Invalid staging subnet ID. Expected format is something like 'subnet-01234abcde'."
+    exit 1
+fi
+
 read -p "Set replication server staging area tags (e.g., Key=value,Foo=bar): " STAGING_TAGS
+if [[ ! $STAGING_TAGS =~ ^([a-zA-Z0-9]+=[a-zA-Z0-9]+)(,[a-zA-Z0-9]+=[a-zA-Z0-9]+)*$ ]]; then
+    echo "Error: Invalid staging tags. Expected format is something like 'key=value,Foo=Bar'."
+    exit 1
+fi
 
 read -p "Do you want to associate a default security group for replication server? (yes/no): " ASSOCIATE_SG
 if [[ "$ASSOCIATE_SG" =~ ^(yes|y)$ ]]; then
@@ -41,7 +74,16 @@ else
 fi
 
 read -p "Set launch server boot mode (LEGACY_BIOS, UEFI, USE_SOURCE). USE_SOURCE recommended: " BOOT_MODE
+if [[ ! $BOOT_MODE =~ (LEGACY_BIOS|UEFI|USE_SOURCE) ]]; then
+    echo "Error: Invalid boot mode. Expected 'LEGACY_BIOS', 'UEFI', or 'USE_SOURCE'."
+    exit 1
+fi
+
 read -p "Set instance state upon launch (STARTED, STOPPED): " LAUNCH_MODE
+if [[ ! $LAUNCH_MODE =~ (STARTED|STOPPED) ]]; then
+    echo "Error: Invalid launch mode. Expected 'STARTED' or 'STOPPED'."
+    exit 1
+fi
 
 read -p "Is server BYOL (Bring Your Own Licensing)? (yes/no): " LICENSE
 if [[ "$LICENSE" =~ ^(yes|y)$ ]]; then
