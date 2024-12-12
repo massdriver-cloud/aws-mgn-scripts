@@ -1,13 +1,13 @@
 #!/bin/bash
 
-################################################
-# Copyright 2024 Massdriver, Inc 
-#
-# This script generates a custom install script 
-# to be ran on a source server to install the
-# replication agent.
-#
-################################################
+#################################################
+# Copyright 2024 Massdriver, Inc                #
+#                                               #
+# This script generates a custom install script #
+# to be ran on a source server to install the   #
+# replication agent.                            #
+#                                               #
+#################################################
 
 read -p "Enter the AWS region (e.g., us-east-1): " AWS_REGION
 if [[ ! "$AWS_REGION" =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then

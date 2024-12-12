@@ -1,13 +1,13 @@
 #!/bin/bash
 
-##############################################################
-# Copyright 2024 Massdriver, Inc
-#
-# This script downloads and installs the MGN replication agent
-# from the specified region, then installs the agent using 
-# short lived credentials.
-#
-##############################################################
+#################################################################
+# Copyright 2024 Massdriver, Inc                                #
+#                                                               #
+# This script downloads and installs the MGN replication agent  #
+# from the specified region, then installs the agent using      #
+# short lived credentials.                                      #
+#                                                               #
+#################################################################
 
 if [[ $# -ne 6 ]]; then
   echo "Usage: $0 <AWS_ACCOUNT_ID> <AWS_REGION> <SERVER_NAME> <AWS_ACCESS_KEY_ID> <AWS_SECRET_ACCESS_KEY> <AWS_SESSION_TOKEN>"

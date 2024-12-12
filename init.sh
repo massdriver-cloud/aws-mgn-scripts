@@ -1,14 +1,14 @@
 #!/bin/bash
 
-######################################################################
-# Copyright 2024 Massdriver, Inc
-#
-# This script initializes the requires roles and policies required for
-# AWS Application Migration Service (MGN). It also enables the service
-# in the region specified during execution. Lastly, it configures
-# default replication and launch templates.
-#
-######################################################################
+#########################################################################
+# Copyright 2024 Massdriver, Inc                                        #
+#                                                                       #
+# This script initializes the requires roles and policies required for  #
+# AWS Application Migration Service (MGN). It also enables the service  #
+# in the region specified during execution. Lastly, it configures       #
+# default replication and launch templates.                             #
+#                                                                       #
+#########################################################################
 
 read -p "Enter the AWS region (e.g., us-east-1): " AWS_REGION
 if [[ ! "$AWS_REGION" =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then

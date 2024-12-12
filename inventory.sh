@@ -1,18 +1,18 @@
 #!/bin/bash
 
-##############################################################
-# Copyright 2024 Massdriver, Inc
-#
-# This script checks for (or creates) an inventory CSV file
-# for configuring an MGN inventory. This CSV file is useful
-# when application servers have multiple dependencies on other
-# servers, or when a migration is to be done in multiple waves.
-#
-# To use:
-# 1. Replace all of the REPLACE keys with desired values
-# 2. Update all of the indexes where needed
-#
-##############################################################
+#################################################################
+# Copyright 2024 Massdriver, Inc                                #
+#                                                               #
+# This script checks for (or creates) an inventory CSV file     #
+# for configuring an MGN inventory. This CSV file is useful     #
+# when application servers have multiple dependencies on other  #
+# servers, or when a migration is to be done in multiple waves. #
+#                                                               #
+# To use:                                                       #
+# 1. Replace all of the REPLACE keys with desired values        #
+# 2. Update all of the indexes where needed                     #
+#                                                               #
+#################################################################
 
 CSV_FILE="./aws-application-migration-service-import.csv"
 
