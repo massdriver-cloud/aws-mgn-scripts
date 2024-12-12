@@ -22,7 +22,7 @@ AWS_ACCESS_KEY_ID=$4
 AWS_SECRET_ACCESS_KEY=$5
 AWS_SESSION_TOKEN=$6
 
-if [[ ! $AWS_REGION =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then
+if [[ ! "$AWS_REGION" =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then
   echo "Error: Invalid AWS region format. Expected format is something like 'us-east-1'."
   exit 1
 fi
@@ -43,7 +43,7 @@ echo "Download complete and file made executable."
 
 echo "Installing AWS replication agent..."
 sudo ./aws-replication-installer-init \
-  --region $AWS_REGION \
+  --region "$AWS_REGION" \
   --aws-access-key-id "$AWS_ACCESS_KEY_ID" \
   --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" \
   --aws-session-token "$AWS_SESSION_TOKEN" \
