@@ -58,5 +58,5 @@ fi
 if [[ "$PLATFORM" =~ ^(windows|Windows|WINDOWS)$ ]]; then
     echo "Paste this PowerShell command into the Windows source server to install the replication agent: "
     echo
-    echo "Invoke-WebRequest -Uri https://raw.githubusercontent.com/massdriver-cloud/aws-mgn-scripts/refs/heads/main/install-agent-scripts/install_agent_windows.ps1 -OutFile \$Env:TEMP\install_agent_windows.ps1; PowerShell -ExecutionPolicy Bypass -File \$Env:TEMP\install_agent_windows.ps1 -AWSAccountID $AWS_ACCOUNT_ID -AWSRegion $AWS_REGION -SourceServerName $SERVER_NAME -AWSAccessKeyID $AWS_ACCESS_KEY_ID -AWSSecretAccessKey $AWS_SECRET_KEY -AWSSessionToken $AWS_SESSION_TOKEN"
+    echo "Invoke-WebRequest -Uri https://raw.githubusercontent.com/massdriver-cloud/aws-mgn-scripts/refs/heads/main/install-agent-scripts/install_agent_windows.ps1 -OutFile \$env:TEMP\install_agent_windows.ps1; PowerShell -ExecutionPolicy Bypass -File \$env:TEMP\install_agent_windows.ps1 -AWSAccountID $AWS_ACCOUNT_ID -AWSRegion $AWS_REGION -SourceServerName $SERVER_NAME -AWSAccessKeyID $AWS_ACCESS_KEY_ID -AWSSecretAccessKey $AWS_SECRET_KEY -AWSSessionToken $AWS_SESSION_TOKEN"
 fi
