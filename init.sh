@@ -101,13 +101,13 @@ create_role_attach_policies() {
     shift 3
     local policies=("$@")
     echo "Creating role $role_name..."
-    aws iam create-role --path "$path" --role-name "$role_name" --assume-role-policy-document "$policy_document" 2>error.log
+    aws iam create-role --path "$path" --role-name "$role_name" --assume-role-policy-document "$policy_document" 2>>init.log
     if [[ $? -ne 0 ]]; then
-        if grep -q "EntityAlreadyExists" error.log; then
+        if grep -q "EntityAlreadyExists" init.log; then
             echo "Role $role_name already exists."
         else
             echo "Error creating role $role_name:"
-            cat error.log
+            cat init.log
         fi
     else
         echo "Role $role_name created successfully."
@@ -115,10 +115,10 @@ create_role_attach_policies() {
 
     for policy in "${policies[@]}"; do
         echo "Attaching policy $policy to role $role_name..."
-        aws iam attach-role-policy --policy-arn "$policy" --role-name "$role_name" 2>error.log
+        aws iam attach-role-policy --policy-arn "$policy" --role-name "$role_name" 2>>init.log
         if [[ $? -ne 0 ]]; then
             echo "Error attaching policy $policy to role $role_name:"
-            cat error.log
+            cat init.log
         else
             echo "Policy $policy attached successfully."
         fi
@@ -246,13 +246,14 @@ aws iam create-role --role-name "AWSApplicationMigrationAgentInstallationRole" -
             \"Action\": \"sts:AssumeRole\"
           }
         ]
-    }"
+    }" 2>>init.log
+
 if [[ $? -ne 0 ]]; then
-    if grep -q "EntityAlreadyExists" error.log; then
+    if grep -q "EntityAlreadyExists" init.log; then
         echo "Role AWSApplicationMigrationAgentInstallationRole already exists."
     else
         echo "Error creating role AWSApplicationMigrationAgentInstallationRole:"
-        cat error.log
+        cat init.log
     fi
 else
     echo "Role AWSApplicationMigrationAgentInstallationRole created successfully."
@@ -262,19 +263,19 @@ echo "Attaching policy arn:aws:iam::aws:policy/AWSApplicationMigrationAgentInsta
 aws iam attach-role-policy --policy-arn "arn:aws:iam::aws:policy/AWSApplicationMigrationAgentInstallationPolicy" --role-name "AWSApplicationMigrationAgentInstallationRole"
 if [[ $? -ne 0 ]]; then
     echo "Error attaching policy to AWSApplicationMigrationAgentInstallationRole:"
-    cat error.log
+    cat init.log
 else
     echo "Policy attached successfully to AWSApplicationMigrationAgentInstallationRole."
 fi
 
 echo "Initializing MGN service..."
-aws mgn initialize-service --region "$AWS_REGION" 2>error.log
+aws mgn initialize-service --region "$AWS_REGION" 2>>init.log
 if [[ $? -ne 0 ]]; then
-    if grep -q "AlreadyInitialized" error.log; then
+    if grep -q "AlreadyInitialized" init.log; then
         echo "MGN service is already initialized in region $AWS_REGION."
     else
         echo "Error initializing MGN service:"
-        cat error.log
+        cat init.log
     fi
 else
     echo "MGN service initialized successfully."
@@ -294,14 +295,14 @@ aws mgn create-replication-configuration-template \
     $ASSOCIATE_SG_ARG \
     $CREATE_PUBLIC_IP_ARG \
     $DEDICATED_REPLICATION_SERVER_ARG \
-    2>error.log
+    2>>init.log
 
 if [[ $? -ne 0 ]]; then
-    if grep -q "ServiceQuotaExceededException" error.log; then
+    if grep -q "ServiceQuotaExceededException" init.log; then
         echo "Replication configuration template already exists for region $AWS_REGION."
     else
         echo "Error creating replication configuration template:"
-        cat error.log
+        cat init.log
     fi
 else
     echo "Replication configuration template created successfully."
@@ -313,15 +314,15 @@ aws mgn create-launch-configuration-template \
     --boot-mode "$BOOT_MODE" \
     --launch-disposition "$LAUNCH_MODE" \
     --licensing "$LICENSE_ARG" \
-    --target-instance-type-right-sizing-method BASIC
-    2>error.log
+    --target-instance-type-right-sizing-method BASIC \
+    2>>init.log
 
 if [[ $? -ne 0 ]]; then
-    if grep -q "ServiceQuotaExceededException" error.log; then
+    if grep -q "ServiceQuotaExceededException" init.log; then
         echo "Launch configuration template already exists for region $AWS_REGION."
     else
         echo "Error creating replication configuration template:"
-        cat error.log
+        cat init.log
     fi
 else
     echo "Replication configuration template created successfully."
