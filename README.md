@@ -32,3 +32,8 @@ Run `./init.sh` and answer prompts.
 ```bash
 aws mgn describe-source-servers --region <region>
 ```
+
+## Migrate into Massdriver
+
+1. Once VM final cutover occurs, VMs can be migrated by filling out and running `./setenvs.sh`.
+2. Then follow the guide [here](https://docs.massdriver.cloud/guides/managing-state).
