@@ -10,86 +10,91 @@
 #                                                                       #
 #########################################################################
 
-read -p "Enter the AWS region (e.g., us-east-1): " AWS_REGION
-if [[ ! "$AWS_REGION" =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]]; then
-  echo "Error: Invalid AWS region format. Expected format is something like 'us-east-1'."
-  exit 1
-fi
+prompt_user() {
+    local prompt="$1"
+    local regex="$2"
+    local error_message="$3"
+    local result_var="$4"
 
-read -p "Set replication server IP type (PUBLIC_IP, PRIVATE_IP): " IP_TYPE
-if [[ ! "$IP_TYPE" =~ ^(PUBLIC_IP|PRIVATE_IP)$ ]]; then
-    echo "Error: Invalid IP type. Expected 'PUBLIC_IP' or 'PRIVATE_IP'."
-    exit 1
-fi
+    while true; do
+        read -p "$prompt" input
+        if [[ "$input" =~ $regex ]]; then
+            eval "$result_var='$input'"
+            break
+        else
+            echo "$error_message"
+        fi
+    done
+}
 
-read -p "Set replication server disk type (GP2, GP3, ST1): " DISK_TYPE
-if [[ ! "$DISK_TYPE" =~ ^(GP2|GP3|ST1)$ ]]; then
-    echo "Error: Invalid disk type. Expected 'GP3', 'GP2', or 'ST1'."
-    exit 1
-fi
+prompt_user "Enter the AWS region (e.g., us-east-1): " \
+    "^[a-z]{2}-[a-z]+-[0-9]+$" \
+    "Error: Invalid AWS region format. Expected format is something like 'us-east-1'." \
+    AWS_REGION
 
-read -p "Set replication server EBS encryption (DEFAULT, CUSTOM): " EBS_ENCRYPTION
-if [[ ! "$EBS_ENCRYPTION" =~ ^(DEFAULT|CUSTOM)$ ]]; then
-    echo "Error: Invalid EBS encryption type. Expected 'DEFAULT' or 'CUSTOM'."
-    exit 1
-fi
+prompt_user "Set replication server IP type (PUBLIC_IP, PRIVATE_IP): " \
+    "^(PUBLIC_IP|PRIVATE_IP)$" \
+    "Error: Invalid IP type. Expected 'PUBLIC_IP' or 'PRIVATE_IP'." \
+    IP_TYPE
 
-read -p "Set replication server instance type (e.g., t2.micro): " INSTANCE_TYPE
-if [[ ! "$INSTANCE_TYPE" =~ ^[a-z]{1}[0-9]{1}\.[a-z]+$ ]]; then
-    echo "Error: Invalid instance type. Expected format is something like 't2.micro' or 'c5.xlarge'."
-    exit 1
-fi
+prompt_user "Set replication server disk type (GP2, GP3, ST1): " \
+    "^(GP2|GP3|ST1)$" \
+    "Error: Invalid disk type. Expected 'GP2', 'GP3', or 'ST1'." \
+    DISK_TYPE
 
-read -p "Set replication server staging area subnet ID (e.g., subnet-01234abcde): " STAGING_SUBNET
-if [[ ! "$STAGING_SUBNET" =~ ^subnet-[a-z0-9]+$ ]]; then
-    echo "Error: Invalid staging subnet ID. Expected format is something like 'subnet-01234abcde'."
-    exit 1
-fi
+prompt_user "Set replication server EBS encryption (DEFAULT, CUSTOM): " \
+    "^(DEFAULT|CUSTOM)$" \
+    "Error: Invalid EBS encryption type. Expected 'DEFAULT' or 'CUSTOM'." \
+    EBS_ENCRYPTION
 
-read -p "Set replication server staging area tags (e.g., Key=value,Foo=bar): " STAGING_TAGS
-if [[ ! "$STAGING_TAGS" =~ ^([a-zA-Z0-9]+=[a-zA-Z0-9]+)(,[a-zA-Z0-9]+=[a-zA-Z0-9]+)*$ ]]; then
-    echo "Error: Invalid staging tags. Expected format is something like 'key=value,Foo=Bar'."
-    exit 1
-fi
+prompt_user "Set replication server instance type (e.g., t2.micro): " \
+    "^[a-z]{1}[0-9]{1}\.[a-z]+$" \
+    "Error: Invalid instance type. Expected format is something like 't2.micro' or 'c5.xlarge'." \
+    INSTANCE_TYPE
 
+prompt_user "Set replication server staging area subnet ID (e.g., subnet-01234abcde). Make sure the subnet is in the same region: " \
+    "^subnet-[a-z0-9]+$" \
+    "Error: Invalid staging subnet ID. Expected format is something like 'subnet-01234abcde'." \
+    STAGING_SUBNET
+
+prompt_user "Set replication server staging area tags (e.g., Key=value,Foo=bar): " \
+    "^([a-zA-Z0-9-]+=[a-zA-Z0-9-]+)(,[a-zA-Z0-9-]+=[a-zA-Z0-9-]+)*$" \
+    "Error: Invalid staging tags. Expected format is something like 'key=value,Foo=Bar'." \
+    STAGING_TAGS
+
+# Handling yes/no prompts with simple logic
 read -p "Do you want to associate a default security group for replication server? (yes/no): " ASSOCIATE_SG
+ASSOCIATE_SG_ARG="--no-associate-default-security-group"
 if [[ "$ASSOCIATE_SG" =~ ^(yes|y)$ ]]; then
     ASSOCIATE_SG_ARG="--associate-default-security-group"
-else
-    ASSOCIATE_SG_ARG="--no-associate-default-security-group"
 fi
 
 read -p "Do you want to create a public IP for replication server? (yes/no): " CREATE_PUBLIC_IP
+CREATE_PUBLIC_IP_ARG="--no-create-public-ip"
 if [[ "$CREATE_PUBLIC_IP" =~ ^(yes|y)$ ]]; then
     CREATE_PUBLIC_IP_ARG="--create-public-ip"
-else
-    CREATE_PUBLIC_IP_ARG="--no-create-public-ip"
 fi
 
 read -p "Do you want to use a dedicated replication server? (yes/no): " USE_DEDICATED_REPLICATION_SERVER
+DEDICATED_REPLICATION_SERVER_ARG="--no-use-dedicated-replication-server"
 if [[ "$USE_DEDICATED_REPLICATION_SERVER" =~ ^(yes|y)$ ]]; then
     DEDICATED_REPLICATION_SERVER_ARG="--use-dedicated-replication-server"
-else
-    DEDICATED_REPLICATION_SERVER_ARG="--no-use-dedicated-replication-server"
 fi
 
-read -p "Set launch server boot mode (LEGACY_BIOS, UEFI, USE_SOURCE). USE_SOURCE recommended: " BOOT_MODE
-if [[ ! "$BOOT_MODE" =~ ^(LEGACY_BIOS|UEFI|USE_SOURCE)$ ]]; then
-    echo "Error: Invalid boot mode. Expected 'LEGACY_BIOS', 'UEFI', or 'USE_SOURCE'."
-    exit 1
-fi
+prompt_user "Set launch server boot mode (LEGACY_BIOS, UEFI, USE_SOURCE). USE_SOURCE recommended: " \
+    "^(LEGACY_BIOS|UEFI|USE_SOURCE)$" \
+    "Error: Invalid boot mode. Expected 'LEGACY_BIOS', 'UEFI', or 'USE_SOURCE'." \
+    BOOT_MODE
 
-read -p "Set instance state upon launch (STARTED, STOPPED): " LAUNCH_MODE
-if [[ ! "$LAUNCH_MODE" =~ ^(STARTED|STOPPED)$ ]]; then
-    echo "Error: Invalid launch mode. Expected 'STARTED' or 'STOPPED'."
-    exit 1
-fi
+prompt_user "Set instance state upon launch (STARTED, STOPPED): " \
+    "^(STARTED|STOPPED)$" \
+    "Error: Invalid launch mode. Expected 'STARTED' or 'STOPPED'." \
+    LAUNCH_MODE
 
 read -p "Is server BYOL (Bring Your Own Licensing)? (yes/no): " LICENSE
+LICENSE_ARG="osByol=false"
 if [[ "$LICENSE" =~ ^(yes|y)$ ]]; then
     LICENSE_ARG="osByol=true"
-else
-    LICENSE_ARG="osByol=false"
 fi
 
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
