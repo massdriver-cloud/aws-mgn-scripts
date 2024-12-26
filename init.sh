@@ -62,7 +62,6 @@ prompt_user "Set replication server staging area tags (e.g., Key=value,Foo=bar):
     "Error: Invalid staging tags. Expected format is something like 'key=value,Foo=Bar'." \
     STAGING_TAGS
 
-# Handling yes/no prompts with simple logic
 read -p "Do you want to associate a default security group for replication server? (yes/no): " ASSOCIATE_SG
 ASSOCIATE_SG_ARG="--no-associate-default-security-group"
 if [[ "$ASSOCIATE_SG" =~ ^(yes|y)$ ]]; then
